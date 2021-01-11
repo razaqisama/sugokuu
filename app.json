@@ -1,0 +1,12 @@
+{
+  "name": "sugoku",
+  "displayName": "sugoku",
+  "expo": {
+    "name": "sugoku",
+    "slug": "sugoku",
+    "version": "1.0.0",
+    "assetBundlePatterns": [
+      "**/*"
+    ]
+  }
+}
