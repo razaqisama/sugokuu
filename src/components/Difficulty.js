@@ -16,7 +16,7 @@ export default function Home() {
     <View style={styles.container}>
       <View style={{flex: 2, alignItems: 'center', justifyContent: 'center',width: windowWidth}}>
         <Text style={{color: 'white', fontSize: 30, fontWeight: 'bold', textShadowColor: 'red', textShadowRadius: 5}}>
-          Play Sukopu!
+          Play Subopu!
         </Text>
       </View>
       <View style={{flex: 4, justifyContent: 'space-evenly', width: windowWidth}}>
@@ -54,6 +54,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'center'
   }
 });

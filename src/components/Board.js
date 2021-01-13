@@ -7,14 +7,13 @@ import randomColor from 'randomcolor'
 export default function Board({route}) {
   const navigation = useNavigation();
   const {difficulty} = route.params;
-  console.log();
   const [board, setBoard] = useState([]);
   const [solvedBoard, setSolvedBoard] = useState([]);
   const [gameStatus, setGameStatus] = useState(true);
   const [timer, setTimer] = useState('');
   const [paused, setPaused] = useState(0);
   const [mistakes, setMistakes] = useState(0);
-  console.log(solvedBoard);
+  const [win, setWin] = useState(false);
   useEffect(()=>{
     fetch(`https://sugoku.herokuapp.com/board?difficulty=${difficulty}`)
     .then(response => response.json())
@@ -47,14 +46,11 @@ export default function Board({route}) {
     if(Number(text) === solvedBoard[index[0]][index[1]]){
       clone[index[0]][index[1]] = Number(text);
     } else {
-      console.log(mistakes, 'sebelum')
       setMistakes(mistakes + 1);
-      console.log(mistakes, 'sesudah')
       clone[index[0]][index[1]] = 0;
     }
     
     if(mistakes > 3) {
-      console.log(mistakes, 'akhir')
       handleGiveUp()
     } else {
       setBoard(clone)
@@ -111,14 +107,6 @@ export default function Board({route}) {
     if(gameStatus) {
       return (
         <View style={{flex: 3, justifyContent: 'center', alignItems: 'center', flexDirection:'row', backgroundColor: "#B8DBD9"}}>
-          <View style={{flex: 1, borderRadius: 10, marginLeft: 10, marginRight: 5, backgroundColor: "#fff"}}>
-            <Button
-              title="Give Up"
-              color="#EE7674"
-              onPress={() => handleGiveUp()}
-            />
-          </View>
-          
           <View style={{flex: 2, borderRadius: 10, marginLeft: 5, marginRight: 10, backgroundColor: "#fff"}}>
             <Button
               title="Check Answer"
@@ -129,17 +117,31 @@ export default function Board({route}) {
         </View>
       )
     } else {
-      return (
-        <View style={{flex: 3, justifyContent: 'center', alignItems: 'center', flexDirection:'row', backgroundColor: "#B8DBD9"}}>
-          <View style={{flex: 1, borderRadius: 10, marginLeft: 10, marginRight: 10, backgroundColor: "#fff"}}>
-            <Button
-              title="Relax, you are doing fine"
-              color="#EE7674"
-              onPress={() => handleGiveUp()}
-            />
+      if(win) {
+        return (
+          <View style={{flex: 3, justifyContent: 'center', alignItems: 'center', flexDirection:'row', backgroundColor: "#B8DBD9"}}>
+            <View style={{flex: 1, borderRadius: 10, marginLeft: 10, marginRight: 10, backgroundColor: "#fff"}}>
+              <Button
+                title={"Yuuuhuuu!!"}
+                color="#EE7674"
+                onPress={() => solve()}
+              />
+            </View>
           </View>
-        </View>
-      )
+        )
+      } else {
+        return (
+          <View style={{flex: 3, justifyContent: 'center', alignItems: 'center', flexDirection:'row', backgroundColor: "#B8DBD9"}}>
+            <View style={{flex: 1, borderRadius: 10, marginLeft: 10, marginRight: 10, backgroundColor: "#fff"}}>
+              <Button
+                title={"Relax, you are doing fine"}
+                color="#EE7674"
+                onPress={() => handleGiveUp()}
+              />
+            </View>
+          </View>
+        )
+      }
     }
   }
 
@@ -155,21 +157,24 @@ export default function Board({route}) {
       }
     }
     if(solved) {
-      pause();
-      navigation.navigate('Finish');
+      setGameStatus(!gameStatus);
+      setWin(true);
     } else {
       handleGiveUp();
     }
   }
-
+  function solve() {
+    navigation.navigate('Finish', {
+      solved: true,
+      time: paused
+    })
+  }
   function handleGiveUp () {
-    pause();
     if(gameStatus) {
-      console.log('kesini');
       setGameStatus(!gameStatus);
       setBoard(solvedBoard);
     } else {
-      navigation.navigate('Home');
+      navigation.navigate('Home')
     }
   }
 
